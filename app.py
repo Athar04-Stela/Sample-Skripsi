@@ -16,6 +16,7 @@ url2= "https://drive.google.com/uc?id=1100vFf3DRD1I7oRQuRj2KILC2aS5JvAJ"
 output2 = "best_mobilenetv3.pth"
 url3= "https://drive.google.com/uc?id=1Nd81W-vqmO5_zc7EtIhmS9dzuev5qFdD"
 output3 = "best_vit.pth"
+
 gdown.download(url, output, quiet=False)
 gdown.download(url2, output2, quiet=False)
 gdown.download(url3, output3, quiet=False)
