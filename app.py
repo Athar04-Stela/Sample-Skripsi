@@ -9,13 +9,19 @@ from torchvision import transforms, models
 from PIL import Image
 import requests
 
+import requests
+
 def download_file(url, filename):
-    if not os.path.exists(filename):
+    if not os.path.exists(filename) or os.path.getsize(filename) < 100000:  # < 100KB dianggap gagal
         print(f"🔽 Downloading {filename}...")
-        response = requests.get(url)
-        with open(filename, 'wb') as f:
-            f.write(response.content)
-        print(f"✅ Downloaded {filename}")
+        try:
+            response = requests.get(url)
+            response.raise_for_status()
+            with open(filename, 'wb') as f:
+                f.write(response.content)
+            print(f"✅ Downloaded {filename}")
+        except Exception as e:
+            print(f"❌ Failed to download {filename}: {e}")
 
 download_file("https://huggingface.co/Stella1301/Sample-Skripsi/resolve/main/best_cvit.pth", "best_cvit.pth")
 download_file("https://huggingface.co/Stella1301/Sample-Skripsi/resolve/main/best_mobilenetv3.pth", "best_mobilenetv3.pth")
