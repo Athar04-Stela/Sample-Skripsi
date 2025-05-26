@@ -7,19 +7,20 @@ import tempfile
 import numpy as np
 from torchvision import transforms, models
 from PIL import Image
-import gdown
+import requests
 
-# download model
-url = "https://drive.google.com/uc?id=1bW9segnrI8clKN6gKP-rORQj-ipYnr9L"
-output = "best_cvit.pth"
-url2= "https://drive.google.com/uc?id=1100vFf3DRD1I7oRQuRj2KILC2aS5JvAJ"
-output2 = "best_mobilenetv3.pth"
-url3= "https://drive.google.com/uc?id=1Nd81W-vqmO5_zc7EtIhmS9dzuev5qFdD"
-output3 = "best_vit.pth"
+def download_file(url, filename):
+    if not os.path.exists(filename):
+        print(f"🔽 Downloading {filename}...")
+        response = requests.get(url)
+        with open(filename, 'wb') as f:
+            f.write(response.content)
+        print(f"✅ Downloaded {filename}")
 
-gdown.download(url, output, quiet=False, fuzzy=True)
-gdown.download(url2, output2, quiet=False, fuzzy=True)
-gdown.download(url3, output3, quiet=False, fuzzy=True)
+download_file("https://huggingface.co/Stella1301/Sample-Skripsi/resolve/main/best_cvit.pth", "best_cvit.pth")
+download_file("https://huggingface.co/Stella1301/Sample-Skripsi/resolve/main/best_mobilenetv3.pth", "best_mobilenetv3.pth")
+download_file("https://huggingface.co/Stella1301/Sample-Skripsi/resolve/main/best_vit.pth", "best_vit.pth")
+
 
 # Setup transform
 transform = transforms.Compose([
