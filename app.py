@@ -17,9 +17,9 @@ output2 = "best_mobilenetv3.pth"
 url3= "https://drive.google.com/uc?id=1Nd81W-vqmO5_zc7EtIhmS9dzuev5qFdD"
 output3 = "best_vit.pth"
 
-gdown.download(url, output, quiet=False)
-gdown.download(url2, output2, quiet=False)
-gdown.download(url3, output3, quiet=False)
+gdown.download(url, output, quiet=False, fuzzy=True)
+gdown.download(url2, output2, quiet=False, fuzzy=True)
+gdown.download(url3, output3, quiet=False, fuzzy=True)
 
 # Setup transform
 transform = transforms.Compose([
