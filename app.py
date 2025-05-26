@@ -8,24 +8,47 @@ import numpy as np
 from torchvision import transforms, models
 from PIL import Image
 import requests
+import os
 
-import requests
+@st.cache_resource
+def load_model(model_name):
+    url_map = {
+        "cvit": "https://huggingface.co/Stella1301/Sample-Skripsi/resolve/main/best_cvit.pth",
+        "vit": "https://huggingface.co/Stella1301/Sample-Skripsi/resolve/main/best_vit.pth",
+        "mobilenetv3": "https://huggingface.co/Stella1301/Sample-Skripsi/resolve/main/best_mobilenetv3.pth"
+    }
 
-def download_file(url, filename):
-    if not os.path.exists(filename) or os.path.getsize(filename) < 100000:  # < 100KB dianggap gagal
-        print(f"🔽 Downloading {filename}...")
-        try:
-            response = requests.get(url)
-            response.raise_for_status()
-            with open(filename, 'wb') as f:
-                f.write(response.content)
-            print(f"✅ Downloaded {filename}")
-        except Exception as e:
-            print(f"❌ Failed to download {filename}: {e}")
+    filename_map = {
+        "cvit": "best_cvit.pth",
+        "vit": "best_vit.pth",
+        "mobilenetv3": "best_mobilenetv3.pth"
+    }
 
-download_file("https://huggingface.co/Stella1301/Sample-Skripsi/resolve/main/best_cvit.pth", "best_cvit.pth")
-download_file("https://huggingface.co/Stella1301/Sample-Skripsi/resolve/main/best_mobilenetv3.pth", "best_mobilenetv3.pth")
-download_file("https://huggingface.co/Stella1301/Sample-Skripsi/resolve/main/best_vit.pth", "best_vit.pth")
+    model_url = url_map[model_name]
+    filename = filename_map[model_name]
+
+    # Download jika file belum ada
+    if not os.path.exists(filename) or os.path.getsize(filename) < 100_000:
+        response = requests.get(model_url)
+        response.raise_for_status()
+        with open(filename, 'wb') as f:
+            f.write(response.content)
+
+    # Load model
+    if model_name == "mobilenetv3":
+        model = models.mobilenet_v3_small(weights=None)
+        model.classifier[3] = torch.nn.Linear(model.classifier[3].in_features, 2)
+        model.load_state_dict(torch.load(filename, map_location='cpu'))
+    elif model_name == "vit":
+        model = models.vit_b_16(weights=None)
+        model.heads.head = torch.nn.Linear(model.heads.head.in_features, 2)
+        model.load_state_dict(torch.load(filename, map_location='cpu'))
+    elif model_name == "cvit":
+        model = timm.create_model("cait_s24_224", pretrained=False, num_classes=2)
+        model.load_state_dict(torch.load(filename, map_location='cpu'))
+
+    model.eval()
+    return model
 
 
 # Setup transform
