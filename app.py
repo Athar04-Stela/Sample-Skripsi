@@ -1,4 +1,4 @@
-!pip install cv2
+pip install cv2
 
 
 import streamlit as st
